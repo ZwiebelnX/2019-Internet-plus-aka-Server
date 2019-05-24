@@ -1,0 +1,9 @@
+package com.aka.server.akaminiprogramserver.controller;
+
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.*;
+
+@RestController
+public class SongController {
+
+}

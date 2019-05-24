@@ -1,6 +1,6 @@
-package com.aka.server.repo.docker;
+package com.aka.server.akaminiprogramserver.repo.docker;
 
-import com.aka.server.repo.entity.SongEntity;
+import com.aka.server.akaminiprogramserver.repo.entity.SongEntity;
 import org.springframework.data.repository.CrudRepository;
 
 /**

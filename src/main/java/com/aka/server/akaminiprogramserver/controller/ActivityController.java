@@ -1,4 +1,4 @@
-package com.aka.server.controller;
+package com.aka.server.akaminiprogramserver.controller;
 
 import org.springframework.web.bind.annotation.RestController;
 

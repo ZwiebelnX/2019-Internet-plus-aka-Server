@@ -1,4 +1,4 @@
-package com.aka.server.util;
+package com.aka.server.akaminiprogramserver.util;
 
 /**
  * <p>Title: AppInfo</p>

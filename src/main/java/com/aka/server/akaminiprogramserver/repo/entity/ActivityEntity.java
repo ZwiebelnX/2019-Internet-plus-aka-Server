@@ -1,9 +1,8 @@
-package com.aka.server.repo.entity;
+package com.aka.server.akaminiprogramserver.repo.entity;
 
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
-import org.springframework.web.servlet.mvc.LastModified;
 
 import javax.persistence.*;
 import java.sql.Timestamp;

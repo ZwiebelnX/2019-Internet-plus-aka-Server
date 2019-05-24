@@ -1,4 +1,4 @@
-package com.aka.server.repo.entity;
+package com.aka.server.akaminiprogramserver.repo.entity;
 
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
