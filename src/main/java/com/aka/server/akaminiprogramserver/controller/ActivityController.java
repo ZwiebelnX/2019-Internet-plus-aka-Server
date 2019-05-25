@@ -1,5 +1,6 @@
 package com.aka.server.akaminiprogramserver.controller;
 import com.aka.server.akaminiprogramserver.DTO.activity.ActivityDTO;
+import com.aka.server.akaminiprogramserver.DTO.activity.ParticipantDTO;
 import com.aka.server.akaminiprogramserver.DTO.result.ResponseDataDTO;
 import com.aka.server.akaminiprogramserver.service.ActivityService;
 import com.aka.server.akaminiprogramserver.util.JsonMapper;
@@ -42,6 +43,29 @@ public class ActivityController {
         }
         else{
             responseData.setReason("数据存储失败！请稍后再试");
+        }
+        return responseData;
+    }
+    @RequestMapping(value = "/activity/{activityId}")
+    @ResponseBody
+    public ResponseDataDTO joinActivity(@RequestBody String jsonString){
+        System.out.print(jsonString);
+        ParticipantDTO participantDTO;
+        try{
+            participantDTO = JsonMapper.getMapper().readValue(jsonString, ParticipantDTO.class);
+        } catch (Exception e){
+            return new ResponseDataDTO("json格式错误！");
+        }
+        ResponseDataDTO responseData = new ResponseDataDTO();
+        int flag=activityService.joinActivity(participantDTO);
+        if(flag==1){
+            responseData.setSuccess(true);
+        }
+        else if(flag==-1){
+            responseData.setReason("没有该活动请重新查询");
+        }
+        else{
+            responseData.setReason("加入失败！请稍后再试");
         }
         return responseData;
     }

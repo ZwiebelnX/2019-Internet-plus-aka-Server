@@ -1,6 +1,7 @@
 package com.aka.server.akaminiprogramserver.service;
 
 import com.aka.server.akaminiprogramserver.DTO.activity.ActivityDTO;
+import com.aka.server.akaminiprogramserver.DTO.activity.ParticipantDTO;
 import com.aka.server.akaminiprogramserver.repo.docker.ActivityRepo;
 import com.aka.server.akaminiprogramserver.repo.entity.ActivityEntity;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -27,28 +28,47 @@ public class ActivityService {
     public ActivityService(ActivityRepo activityRepo){
         this.activityRepo=activityRepo;
     }
-    public boolean postActivity(ActivityDTO activityCTO){
+    public boolean postActivity(ActivityDTO activityDTO){
         ActivityEntity newActivity=new ActivityEntity();
         try {
-            newActivity.setLeaderOpenid(activityCTO.getOpenid());
-            newActivity.setName(activityCTO.getName());
+            newActivity.setLeaderOpenid(activityDTO.getOpenid());
+            newActivity.setName(activityDTO.getName());
             Timestamp ts = new Timestamp(System.currentTimeMillis());
             try {
-                ts = Timestamp.valueOf(activityCTO.getTime());
+                ts = Timestamp.valueOf(activityDTO.getTime());
             } catch (Exception e) {
                 e.printStackTrace();
             }
             newActivity.setStartTime(ts);
-            newActivity.setLocation(activityCTO.getLocation());
-            int maxTmp=Integer.parseInt(activityCTO.getMaxPeopleCounting());
+            newActivity.setLocation(activityDTO.getLocation());
+            int maxTmp=Integer.parseInt(activityDTO.getMaxPeopleCounting());
             newActivity.setMaxPeopleCounting(maxTmp);
-            newActivity.setComment(activityCTO.getComment());
-            newActivity.setPhone(activityCTO.getPhone());
+            newActivity.setComment(activityDTO.getComment());
+            newActivity.setPhone(activityDTO.getPhone());
             activityRepo.save(newActivity);
             return true;
         }catch (Exception e){
             e.printStackTrace();
             return false;
         }
+    }
+    public int joinActivity(ParticipantDTO participantDTO){
+        int tmpId=Integer.parseInt(participantDTO.getActivityId());
+        ActivityEntity nowActivity=activityRepo.findById(tmpId);
+        if(nowActivity==null){
+            return -1;
+        }
+        try{
+            int count=nowActivity.getNowPeopleCounting()+1;
+            nowActivity.setNowPeopleCounting(count);
+            String nowParticipant=nowActivity.getParticipant()+";"+participantDTO.getOpenid();
+            nowActivity.setParticipant(nowParticipant);
+            activityRepo.save(nowActivity);
+            return 1;
+        }catch (Exception e){
+            e.printStackTrace();
+            return 0;
+        }
+
     }
 }

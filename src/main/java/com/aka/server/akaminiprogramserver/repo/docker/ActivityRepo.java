@@ -4,4 +4,5 @@ import com.aka.server.akaminiprogramserver.repo.entity.ActivityEntity;
 import org.springframework.data.repository.CrudRepository;
 
 public interface ActivityRepo extends CrudRepository<ActivityEntity, Long> {
+    ActivityEntity findById(long id);
 }
