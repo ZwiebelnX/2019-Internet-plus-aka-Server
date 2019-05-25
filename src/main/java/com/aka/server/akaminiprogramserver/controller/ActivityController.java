@@ -1,5 +1,6 @@
 package com.aka.server.akaminiprogramserver.controller;
 import com.aka.server.akaminiprogramserver.DTO.activity.ActivityDTO;
+import com.aka.server.akaminiprogramserver.DTO.activity.LeaderDTO;
 import com.aka.server.akaminiprogramserver.DTO.activity.ParticipantDTO;
 import com.aka.server.akaminiprogramserver.DTO.result.ResponseDataDTO;
 import com.aka.server.akaminiprogramserver.service.ActivityService;
@@ -27,6 +28,7 @@ public class ActivityController {
     public ActivityController(ActivityService activityService){
         this.activityService=activityService;
     }
+    //创建活动
     @RequestMapping(value = "/activity")
     @ResponseBody
     public ResponseDataDTO postActivity(@RequestBody String jsonString) {
@@ -46,6 +48,7 @@ public class ActivityController {
         }
         return responseData;
     }
+    //加入活动
     @RequestMapping(value = "/activity/{activityId}")
     @ResponseBody
     public ResponseDataDTO joinActivity(@RequestBody String jsonString){
@@ -67,5 +70,17 @@ public class ActivityController {
             responseData.setReason("加入失败！请稍后再试");
         }
         return responseData;
+    }
+    //获取我发起的活动
+    @RequestMapping(value="/activity/myactivity")
+    @ResponseBody
+    public ResponseDataDTO findByLeader(@RequestBody String jsonString){
+        LeaderDTO leaderDTO;
+        try{
+           leaderDTO=JsonMapper.getMapper().readValue(jsonString, LeaderDTO.class);
+        }catch (Exception e){
+            return new ResponseDataDTO("json格式错误！");
+        }
+        return activityService.findByLeader(leaderDTO);
     }
 }

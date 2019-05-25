@@ -1,13 +1,18 @@
 package com.aka.server.akaminiprogramserver.service;
 
 import com.aka.server.akaminiprogramserver.DTO.activity.ActivityDTO;
+import com.aka.server.akaminiprogramserver.DTO.activity.LeaderDTO;
 import com.aka.server.akaminiprogramserver.DTO.activity.ParticipantDTO;
+import com.aka.server.akaminiprogramserver.DTO.result.ResponseDataDTO;
+import com.aka.server.akaminiprogramserver.DTO.result.ResultDTO;
 import com.aka.server.akaminiprogramserver.repo.docker.ActivityRepo;
 import com.aka.server.akaminiprogramserver.repo.entity.ActivityEntity;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.sql.Timestamp;
+import java.util.ArrayList;
+import java.util.List;
 
 
 /**
@@ -28,6 +33,7 @@ public class ActivityService {
     public ActivityService(ActivityRepo activityRepo){
         this.activityRepo=activityRepo;
     }
+    //创建活动
     public boolean postActivity(ActivityDTO activityDTO){
         ActivityEntity newActivity=new ActivityEntity();
         try {
@@ -52,6 +58,7 @@ public class ActivityService {
             return false;
         }
     }
+    //参加活动
     public int joinActivity(ParticipantDTO participantDTO){
         int tmpId=Integer.parseInt(participantDTO.getActivityId());
         ActivityEntity nowActivity=activityRepo.findById(tmpId);
@@ -69,6 +76,13 @@ public class ActivityService {
             e.printStackTrace();
             return 0;
         }
-
+    }
+    //获取我发起的活动
+    public ResponseDataDTO findByLeader(LeaderDTO leaderDTO){
+        List<ActivityEntity> lists=activityRepo.findByLeaderOpenid(leaderDTO.getOpenid());
+        ResponseDataDTO response = new ResponseDataDTO();
+        response.setSuccess(true);
+        response.setResult(lists);
+        return response;
     }
 }
