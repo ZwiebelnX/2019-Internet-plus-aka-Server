@@ -55,8 +55,8 @@ public class ResponseDataDTO {
 
     @Override
     public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
+        if (this == o) {return true;}
+        if (o == null || getClass() != o.getClass()) {return false;}
         ResponseDataDTO that = (ResponseDataDTO) o;
         return success == that.success &&
                 Objects.equals(result, that.result) &&
