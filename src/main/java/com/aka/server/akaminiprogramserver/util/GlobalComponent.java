@@ -1,6 +1,7 @@
 package com.aka.server.akaminiprogramserver.util;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import okhttp3.OkHttpClient;
 
 /**
  * <p>Title: JsonMapper</p>
@@ -12,15 +13,21 @@ import com.fasterxml.jackson.databind.ObjectMapper;
  * @version V1.0
  * @date 2019/5/25 16:52
  */
-public class JsonMapper {
+public class GlobalComponent {
     private static ObjectMapper mapper = null;
+    private static OkHttpClient okHttpClient = null;
 
-    private JsonMapper(){}
+    private GlobalComponent(){}
 
-    public static ObjectMapper getMapper() {
+    public static ObjectMapper getJsonMapper() {
         if(mapper == null){
             mapper = new ObjectMapper();
         }
         return mapper;
+    }
+
+    public static OkHttpClient getOkHttpClient() {
+        if(okHttpClient == null) okHttpClient = new OkHttpClient();
+        return okHttpClient;
     }
 }

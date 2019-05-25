@@ -5,7 +5,7 @@ import com.aka.server.akaminiprogramserver.DTO.activity.LeaderDTO;
 import com.aka.server.akaminiprogramserver.DTO.activity.ParticipantDTO;
 import com.aka.server.akaminiprogramserver.DTO.result.ResponseDataDTO;
 import com.aka.server.akaminiprogramserver.service.ActivityService;
-import com.aka.server.akaminiprogramserver.util.JsonMapper;
+import com.aka.server.akaminiprogramserver.util.GlobalComponent;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -35,7 +35,7 @@ public class ActivityController {
     public ResponseDataDTO postActivity(@RequestBody String jsonString) {
         ActivityDTO activityDTO;
         try{
-            activityDTO = JsonMapper.getMapper().readValue(jsonString, ActivityDTO.class);
+            activityDTO = GlobalComponent.getJsonMapper().readValue(jsonString, ActivityDTO.class);
         } catch (Exception e){
             return new ResponseDataDTO("json格式错误！");
         }
@@ -55,7 +55,7 @@ public class ActivityController {
     public ResponseDataDTO joinActivity(@RequestBody String jsonString){
         ParticipantDTO participantDTO;
         try{
-            participantDTO = JsonMapper.getMapper().readValue(jsonString, ParticipantDTO.class);
+            participantDTO = GlobalComponent.getJsonMapper().readValue(jsonString, ParticipantDTO.class);
         } catch (Exception e){
             return new ResponseDataDTO("json格式错误！");
         }
@@ -78,7 +78,7 @@ public class ActivityController {
     public ResponseDataDTO delete(@RequestBody String jsonString) {
         DeleteDTO deleteDTO;
         try{
-            deleteDTO = JsonMapper.getMapper().readValue(jsonString, DeleteDTO.class);
+            deleteDTO = GlobalComponent.getJsonMapper().readValue(jsonString, DeleteDTO.class);
         } catch (Exception e){
             return new ResponseDataDTO("json格式错误！");
         }
@@ -104,7 +104,7 @@ public class ActivityController {
     public ResponseDataDTO findByLeader(@RequestBody String jsonString){
         LeaderDTO leaderDTO;
         try{
-           leaderDTO=JsonMapper.getMapper().readValue(jsonString, LeaderDTO.class);
+           leaderDTO= GlobalComponent.getJsonMapper().readValue(jsonString, LeaderDTO.class);
         }catch (Exception e){
             return new ResponseDataDTO("json格式错误！");
         }

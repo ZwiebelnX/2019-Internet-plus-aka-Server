@@ -8,12 +8,11 @@ import com.aka.server.akaminiprogramserver.DTO.user.WxOpenidDTO;
 import com.aka.server.akaminiprogramserver.repo.docker.UserRepo;
 import com.aka.server.akaminiprogramserver.repo.entity.UserEntity;
 import com.aka.server.akaminiprogramserver.util.GlobalData;
-import com.aka.server.akaminiprogramserver.util.JsonMapper;
+import com.aka.server.akaminiprogramserver.util.GlobalComponent;
 import okhttp3.Call;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.Response;
-import org.apache.catalina.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -60,7 +59,7 @@ public class UserService {
             final Call call = httpClient.newCall(request);
             Response response = call.execute();
             if(response.isSuccessful() && response.body() != null){
-                WxOpenidDTO openidDTO = JsonMapper.getMapper().readValue(response.body().string(), WxOpenidDTO.class);
+                WxOpenidDTO openidDTO = GlobalComponent.getJsonMapper().readValue(response.body().string(), WxOpenidDTO.class);
 
                 if(openidDTO.getErrcode() != 0) throw new IOException("获取openID失败！");
 

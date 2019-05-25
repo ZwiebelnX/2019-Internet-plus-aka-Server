@@ -5,7 +5,6 @@ import com.aka.server.akaminiprogramserver.DTO.activity.DeleteDTO;
 import com.aka.server.akaminiprogramserver.DTO.activity.LeaderDTO;
 import com.aka.server.akaminiprogramserver.DTO.activity.ParticipantDTO;
 import com.aka.server.akaminiprogramserver.DTO.result.ResponseDataDTO;
-import com.aka.server.akaminiprogramserver.DTO.result.ResultDTO;
 import com.aka.server.akaminiprogramserver.repo.docker.ActivityRepo;
 import com.aka.server.akaminiprogramserver.repo.entity.ActivityEntity;
 import org.springframework.beans.factory.annotation.Autowired;

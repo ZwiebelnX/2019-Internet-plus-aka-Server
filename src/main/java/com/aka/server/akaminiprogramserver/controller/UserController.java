@@ -3,7 +3,7 @@ package com.aka.server.akaminiprogramserver.controller;
 import com.aka.server.akaminiprogramserver.DTO.result.ResponseDataDTO;
 import com.aka.server.akaminiprogramserver.DTO.user.UserDTO;
 import com.aka.server.akaminiprogramserver.service.UserService;
-import com.aka.server.akaminiprogramserver.util.JsonMapper;
+import com.aka.server.akaminiprogramserver.util.GlobalComponent;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -28,7 +28,7 @@ public class UserController {
     public ResponseDataDTO updateUserInfo(@RequestBody String jsonString){
         UserDTO user;
         try{
-            user = JsonMapper.getMapper().readValue(jsonString, UserDTO.class);
+            user = GlobalComponent.getJsonMapper().readValue(jsonString, UserDTO.class);
         } catch (Exception e){
             return new ResponseDataDTO("json格式错误！");
         }

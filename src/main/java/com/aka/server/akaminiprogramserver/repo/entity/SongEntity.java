@@ -16,7 +16,7 @@ import java.util.Objects;
  *
  * @author Zwiebeln_Chan
  * @version V1.0
- * @date 2019/5/24 20:32
+ * @date 2019/5/26 0:17
  */
 @Entity
 @EntityListeners(AuditingEntityListener.class) //启动自动生成时间
@@ -27,12 +27,14 @@ public class SongEntity {
     private Timestamp gmtModified;
     private String name;
     private String leaderId;
+    private byte peopleCounting;
+    private String filesUrl;
     private String cover;
     private String part;
     private String lyric;
 
     @Id
-    @CreatedDate
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id", nullable = false)
     public long getId() {
         return id;
@@ -43,7 +45,7 @@ public class SongEntity {
     }
 
     @Basic
-    @LastModifiedDate
+    @CreatedDate
     @Column(name = "gmt_create", nullable = false)
     public Timestamp getGmtCreate() {
         return gmtCreate;
@@ -54,6 +56,7 @@ public class SongEntity {
     }
 
     @Basic
+    @LastModifiedDate
     @Column(name = "gmt_modified", nullable = false)
     public Timestamp getGmtModified() {
         return gmtModified;
@@ -81,6 +84,26 @@ public class SongEntity {
 
     public void setLeaderId(String leaderId) {
         this.leaderId = leaderId;
+    }
+
+    @Basic
+    @Column(name = "people_counting", nullable = false)
+    public byte getPeopleCounting() {
+        return peopleCounting;
+    }
+
+    public void setPeopleCounting(byte peopleCounting) {
+        this.peopleCounting = peopleCounting;
+    }
+
+    @Basic
+    @Column(name = "files_url", nullable = true, length = 1000)
+    public String getFilesUrl() {
+        return filesUrl;
+    }
+
+    public void setFilesUrl(String filesUrl) {
+        this.filesUrl = filesUrl;
     }
 
     @Basic
@@ -119,10 +142,12 @@ public class SongEntity {
         if (o == null || getClass() != o.getClass()) return false;
         SongEntity that = (SongEntity) o;
         return id == that.id &&
+                peopleCounting == that.peopleCounting &&
                 Objects.equals(gmtCreate, that.gmtCreate) &&
                 Objects.equals(gmtModified, that.gmtModified) &&
                 Objects.equals(name, that.name) &&
                 Objects.equals(leaderId, that.leaderId) &&
+                Objects.equals(filesUrl, that.filesUrl) &&
                 Objects.equals(cover, that.cover) &&
                 Objects.equals(part, that.part) &&
                 Objects.equals(lyric, that.lyric);
@@ -130,6 +155,6 @@ public class SongEntity {
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, gmtCreate, gmtModified, name, leaderId, cover, part, lyric);
+        return Objects.hash(id, gmtCreate, gmtModified, name, leaderId, peopleCounting, filesUrl, cover, part, lyric);
     }
 }
