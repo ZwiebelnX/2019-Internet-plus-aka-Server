@@ -1,7 +1,7 @@
 package com.aka.server.akaminiprogramserver.DTO.user;
 
 /**
- * <p>Title: Data</p>
+ * <p>Title: UserDataDTO</p>
  * <p>Description: </p>
  * <p>Copyright: Copyright (c) 2019版权</p>
  * <p>Company: </p>
@@ -10,7 +10,7 @@ package com.aka.server.akaminiprogramserver.DTO.user;
  * @version V1.0
  * @date 2019/5/24 20:53
  */
-public class Data {
+public class UserDataDTO {
     private String realName;
     private String grade;
     private String gender;

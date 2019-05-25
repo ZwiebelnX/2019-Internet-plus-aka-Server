@@ -1,8 +1,7 @@
 package com.aka.server.akaminiprogramserver.repo.entity;
 
-import org.springframework.data.annotation.CreatedDate;
-import org.springframework.data.annotation.LastModifiedDate;
-import org.springframework.data.jpa.domain.support.AuditingEntityListener;
+import com.aka.server.akaminiprogramserver.DTO.result.ResultDTO;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import javax.persistence.*;
 import java.sql.Timestamp;
@@ -16,12 +15,11 @@ import java.util.Objects;
  *
  * @author Zwiebeln_Chan
  * @version V1.0
- * @date 2019/5/24 20:32
+ * @date 2019/5/25 17:43
  */
 @Entity
-@EntityListeners(AuditingEntityListener.class) //启动自动生成时间
 @Table(name = "user", schema = "test_aka", catalog = "")
-public class UserEntity {
+public class UserEntity implements ResultDTO {
     private long id;
     private Timestamp gmtCreate;
     private Timestamp gmtModified;
@@ -29,11 +27,13 @@ public class UserEntity {
     private String realName;
     private String nickname;
     private String grade;
+    private String gender;
     private Byte age;
     private String college;
     private String phone;
 
     @Id
+    @JsonIgnore
     @Column(name = "id", nullable = false)
     public long getId() {
         return id;
@@ -44,7 +44,7 @@ public class UserEntity {
     }
 
     @Basic
-    @CreatedDate
+    @JsonIgnore
     @Column(name = "gmt_create", nullable = false)
     public Timestamp getGmtCreate() {
         return gmtCreate;
@@ -55,7 +55,7 @@ public class UserEntity {
     }
 
     @Basic
-    @LastModifiedDate
+    @JsonIgnore
     @Column(name = "gmt_modified", nullable = false)
     public Timestamp getGmtModified() {
         return gmtModified;
@@ -66,6 +66,7 @@ public class UserEntity {
     }
 
     @Basic
+    @JsonIgnore
     @Column(name = "openid", nullable = false, length = 35)
     public String getOpenid() {
         return openid;
@@ -103,6 +104,16 @@ public class UserEntity {
 
     public void setGrade(String grade) {
         this.grade = grade;
+    }
+
+    @Basic
+    @Column(name = "gender", nullable = true, length = 2)
+    public String getGender() {
+        return gender;
+    }
+
+    public void setGender(String gender) {
+        this.gender = gender;
     }
 
     @Basic
@@ -147,6 +158,7 @@ public class UserEntity {
                 Objects.equals(realName, that.realName) &&
                 Objects.equals(nickname, that.nickname) &&
                 Objects.equals(grade, that.grade) &&
+                Objects.equals(gender, that.gender) &&
                 Objects.equals(age, that.age) &&
                 Objects.equals(college, that.college) &&
                 Objects.equals(phone, that.phone);
@@ -154,6 +166,6 @@ public class UserEntity {
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, gmtCreate, gmtModified, openid, realName, nickname, grade, age, college, phone);
+        return Objects.hash(id, gmtCreate, gmtModified, openid, realName, nickname, grade, gender, age, college, phone);
     }
 }

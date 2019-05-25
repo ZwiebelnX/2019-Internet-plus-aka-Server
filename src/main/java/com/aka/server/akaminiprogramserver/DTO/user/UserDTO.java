@@ -10,11 +10,11 @@ package com.aka.server.akaminiprogramserver.DTO.user;
  * @version V1.0
  * @date 2019/5/24 20:52
  */
-public class User {
+public class UserDTO {
     private String openid;
-    private Data data;
+    private UserDataDTO data;
 
-    public Data getData() {
+    public UserDataDTO getData() {
         return data;
     }
 
@@ -22,7 +22,7 @@ public class User {
         return openid;
     }
 
-    public void setData(Data data) {
+    public void setData(UserDataDTO data) {
         this.data = data;
     }
 

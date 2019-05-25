@@ -1,11 +1,11 @@
 package com.aka.server.akaminiprogramserver.DTO.result;
 
-import com.fasterxml.jackson.annotation.JsonFilter;
+import com.fasterxml.jackson.annotation.JsonInclude;
 
 import java.util.Objects;
 
 /**
- * <p>Title: ResponseData</p>
+ * <p>Title: ResponseDataDTO</p>
  * <p>Description: </p>
  * <p>Copyright: Copyright (c) 2019版权</p>
  * <p>Company: </p>
@@ -14,11 +14,20 @@ import java.util.Objects;
  * @version V1.0
  * @date 2019/5/24 22:52
  */
-public class ResponseData {
+
+@JsonInclude(JsonInclude.Include.NON_NULL)
+public class ResponseDataDTO {
 
     private boolean success = false;
-    private Result result = null;
-    private String reason = "";
+    private ResultDTO result = null;
+    private String reason = null;
+
+    public ResponseDataDTO(){}
+
+    public ResponseDataDTO(String failureReason){
+        success = false;
+        reason = failureReason;
+    }
 
     public boolean isSuccess() {
         return success;
@@ -28,11 +37,11 @@ public class ResponseData {
         this.success = success;
     }
 
-    public Result getResult() {
+    public ResultDTO getResult() {
         return result;
     }
 
-    public void setResult(Result result) {
+    public void setResult(ResultDTO result) {
         this.result = result;
     }
 
@@ -48,7 +57,7 @@ public class ResponseData {
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-        ResponseData that = (ResponseData) o;
+        ResponseDataDTO that = (ResponseDataDTO) o;
         return success == that.success &&
                 Objects.equals(result, that.result) &&
                 Objects.equals(reason, that.reason);
