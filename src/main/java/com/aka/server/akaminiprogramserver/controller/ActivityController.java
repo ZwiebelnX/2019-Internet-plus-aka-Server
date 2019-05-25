@@ -1,5 +1,6 @@
 package com.aka.server.akaminiprogramserver.controller;
 import com.aka.server.akaminiprogramserver.DTO.activity.ActivityDTO;
+import com.aka.server.akaminiprogramserver.DTO.activity.DeleteDTO;
 import com.aka.server.akaminiprogramserver.DTO.activity.LeaderDTO;
 import com.aka.server.akaminiprogramserver.DTO.activity.ParticipantDTO;
 import com.aka.server.akaminiprogramserver.DTO.result.ResponseDataDTO;
@@ -68,6 +69,32 @@ public class ActivityController {
         }
         else{
             responseData.setReason("加入失败！请稍后再试");
+        }
+        return responseData;
+    }
+    //删除活动
+    @RequestMapping(value="/activity/{id}")
+    @ResponseBody
+    public ResponseDataDTO delete(@RequestBody String jsonString) {
+        DeleteDTO deleteDTO;
+        try{
+            deleteDTO = JsonMapper.getMapper().readValue(jsonString, DeleteDTO.class);
+        } catch (Exception e){
+            return new ResponseDataDTO("json格式错误！");
+        }
+        ResponseDataDTO responseData = new ResponseDataDTO();
+        int flag=activityService.delete(deleteDTO);
+        if(flag==1){
+            responseData.setSuccess(true);
+        }
+        else if(flag==-1){
+            responseData.setReason("不存在该活动，请重新搜索！");
+        }
+        else if(flag==-2){
+            responseData.setReason("您无权限删除该活动！");
+        }
+        else{
+            responseData.setReason("数据存储失败！请稍后再试");
         }
         return responseData;
     }
