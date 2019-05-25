@@ -61,7 +61,7 @@ public class ActivityService {
         try{
             int count=nowActivity.getNowPeopleCounting()+1;
             nowActivity.setNowPeopleCounting(count);
-            String nowParticipant=nowActivity.getParticipant()+";"+participantDTO.getOpenid();
+            String nowParticipant=nowActivity.getParticipant()+participantDTO.getOpenid()+";";
             nowActivity.setParticipant(nowParticipant);
             activityRepo.save(nowActivity);
             return 1;

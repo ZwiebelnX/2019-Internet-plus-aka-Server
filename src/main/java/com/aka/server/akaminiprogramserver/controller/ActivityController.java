@@ -49,7 +49,6 @@ public class ActivityController {
     @RequestMapping(value = "/activity/{activityId}")
     @ResponseBody
     public ResponseDataDTO joinActivity(@RequestBody String jsonString){
-        System.out.print(jsonString);
         ParticipantDTO participantDTO;
         try{
             participantDTO = JsonMapper.getMapper().readValue(jsonString, ParticipantDTO.class);
