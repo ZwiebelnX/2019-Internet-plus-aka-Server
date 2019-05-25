@@ -5,7 +5,7 @@ import com.fasterxml.jackson.annotation.JsonInclude;
 import java.util.Objects;
 
 /**
- * <p>Title: ResponseDataDTO</p>
+ * <p>Title: ResponseData</p>
  * <p>Description: </p>
  * <p>Copyright: Copyright (c) 2019版权</p>
  * <p>Company: </p>
@@ -19,7 +19,7 @@ import java.util.Objects;
 public class ResponseDataDTO {
 
     private boolean success = false;
-    private ResultDTO result = null;
+    private Object result = null;
     private String reason = null;
 
     public ResponseDataDTO(){}
@@ -37,11 +37,11 @@ public class ResponseDataDTO {
         this.success = success;
     }
 
-    public ResultDTO getResult() {
+    public Object getResult() {
         return result;
     }
 
-    public void setResult(ResultDTO result) {
+    public void setResult(Object result) {
         this.result = result;
     }
 

@@ -1,6 +1,5 @@
 package com.aka.server.akaminiprogramserver.repo.entity;
 
-import com.aka.server.akaminiprogramserver.DTO.result.ResultDTO;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import javax.persistence.*;
@@ -19,7 +18,7 @@ import java.util.Objects;
  */
 @Entity
 @Table(name = "user", schema = "test_aka", catalog = "")
-public class UserEntity implements ResultDTO {
+public class UserEntity{
     private long id;
     private Timestamp gmtCreate;
     private Timestamp gmtModified;

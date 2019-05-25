@@ -1,7 +1,5 @@
 package com.aka.server.akaminiprogramserver.DTO.user;
 
-import com.aka.server.akaminiprogramserver.DTO.result.ResultDTO;
-
 import java.util.Objects;
 
 /**
@@ -14,7 +12,7 @@ import java.util.Objects;
  * @version V1.0
  * @date 2019/5/25 16:57
  */
-public class OpenidDTO implements ResultDTO {
+public class OpenidDTO{
 
     private String openid;
 
