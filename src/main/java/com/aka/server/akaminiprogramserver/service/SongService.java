@@ -12,6 +12,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import javax.transaction.Transactional;
 import java.io.File;
+import java.io.IOException;
 import java.util.Map;
 
 /**
@@ -50,8 +51,10 @@ public class SongService {
         songRepo.save(songEntity);
 
         String uploadFileName = songEntity.getId() + "_0.mp3";
-        File uploadFile = new File(System.getProperty("user.dir"),uploadFileName);
+        File uploadFile = new File(".", uploadFileName);
         try{
+
+            if(!uploadFile.createNewFile()) throw new IOException("缓存文件创建失败");
             file.transferTo(uploadFile);
 
             MediaType multiPartFormData = MediaType.parse("multipart/form-data; charset=utf-8");
@@ -77,6 +80,8 @@ public class SongService {
         } catch (Exception e){
             e.printStackTrace();
             responseDTO.setResult("创建缓存文件失败，请重试");
+        } finally {
+            uploadFile.delete();
         }
         return responseDTO;
     }
