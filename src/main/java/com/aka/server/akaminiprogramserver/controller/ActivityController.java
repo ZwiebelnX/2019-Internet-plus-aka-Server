@@ -110,4 +110,30 @@ public class ActivityController {
         }
         return activityService.findByLeader(leaderDTO);
     }
+
+    //获取我参与的活动
+    @RequestMapping(value = "/activity/participateactivity")
+
+    public ResponseDataDTO findByParticipant(@RequestBody String jsonString){
+        ParticipantDTO participantDTO;
+        try{
+            participantDTO = JsonMapper.getMapper().readValue(jsonString, ParticipantDTO.class);
+        }catch(Exception e){
+            return new ResponseDataDTO("json格式错误！");
+        }
+        return activityService.findByParticipant(participantDTO);
+    }
+
+    //获取活动列表
+    @RequestMapping(value = "/activity/activitylist")
+
+    public ResponseDataDTO getActivityList(@RequestBody String jsonString){
+        ActivityDTO activityDTO;
+        try{
+            activityDTO = JsonMapper.getMapper().readValue(jsonString,ActivityDTO.class);
+        }catch (Exception e){
+            return  new ResponseDataDTO("json格式错误！");
+        }
+        return activityService.getActivityList(activityDTO);
+    }
 }

@@ -107,4 +107,22 @@ public class ActivityService {
         response.setResult(lists);
         return response;
     }
+
+    //获取我参与的活动
+    public ResponseDataDTO findByParticipant(ParticipantDTO participantDTO){
+        List<ActivityEntity> lists = activityRepo.findByParticipantId(participantDTO.getOpenid());
+        ResponseDataDTO response = new ResponseDataDTO();
+        response.setSuccess(true);
+        response.setResult(lists);
+        return response;
+    }
+
+    //获取活动列表
+    public ResponseDataDTO getActivityList(ActivityDTO activityDTO){
+        List<ActivityEntity> lists = activityRepo.findByActivityid();//获取所有
+        ResponseDataDTO response = new ResponseDataDTO();
+        response.setSuccess(true);
+        response.setResult(lists);
+        return response;
+    }
 }
