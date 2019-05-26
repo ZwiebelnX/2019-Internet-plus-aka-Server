@@ -73,7 +73,7 @@ public class SongService {
         Optional<SongEntity> songEntity = songRepo.findById(songId);
 
         if(!songEntity.isPresent()) return new ResponseDataDTO("获取歌曲失败！请检查ID号");
-
+        songEntity.get().setPeopleCounting((byte)(songEntity.get().getPeopleCounting() + 1));
         String uploadFilename = songEntity.get().getId() + "_" + songEntity.get().getPeopleCounting() + ".mp3";
         Response response = uploadSongFile(file, uploadFilename, request);
         if(response != null && response.isSuccessful()){
@@ -148,7 +148,7 @@ public class SongService {
             songInfoDTO.setCreatorOpenid(songEntity.getCreatorOpenid());
             songInfoDTO.setLyric(songEntity.getLyric());
             songInfoDTO.setPart(songEntity.getPart().split(";"));
-            songInfoDTO.setSongFiles(songEntity.getFilesUrl().split(";"));
+            songInfoDTO.setSongFiles(songEntity.getFilesUrl() == null ? null : songEntity.getFilesUrl().split(";"));
             songInfoDTOList.add(songInfoDTO);
         }
         return songInfoDTOList;
