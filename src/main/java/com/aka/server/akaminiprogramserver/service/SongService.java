@@ -1,6 +1,7 @@
 package com.aka.server.akaminiprogramserver.service;
 
 import com.aka.server.akaminiprogramserver.DTO.result.ResponseDataDTO;
+import com.aka.server.akaminiprogramserver.DTO.song.SongInfoDTO;
 import com.aka.server.akaminiprogramserver.repo.docker.SongRepo;
 import com.aka.server.akaminiprogramserver.repo.entity.SongEntity;
 import com.aka.server.akaminiprogramserver.util.GlobalComponent;
@@ -14,6 +15,8 @@ import javax.servlet.http.HttpServletRequest;
 import javax.transaction.Transactional;
 import java.io.File;
 import java.io.IOException;
+import java.util.LinkedList;
+import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
@@ -43,10 +46,10 @@ public class SongService {
 
 
         SongEntity songEntity = new SongEntity();
-        songEntity.setLeaderId(paramMap.get("openid"));
+        songEntity.setCreatorOpenid(paramMap.get("openid"));
         songEntity.setLyric(paramMap.get("lyric"));
-        songEntity.setName(paramMap.get("songName"));
-        songEntity.setPeopleCounting((byte)0);
+        songEntity.setSongName(paramMap.get("songName"));
+        songEntity.setPeopleCounting((byte)1);
         songEntity.setPart(paramMap.get("part") + ":" + paramMap.get("nickname") + ";");
 
         songRepo.save(songEntity);
@@ -85,6 +88,14 @@ public class SongService {
         return responseDataDTO;
     }
 
+    public ResponseDataDTO getSongList(){
+        ResponseDataDTO responseDataDTO = new ResponseDataDTO();
+        List<SongEntity> songEntityList = songRepo.findAll();
+        responseDataDTO.setSuccess(true);
+        responseDataDTO.setResult(createSongInfoDTO(songEntityList));
+        return responseDataDTO;
+    }
+
     private Response uploadSongFile(MultipartFile file, String uploadFileName, HttpServletRequest httpRequest){
         OkHttpClient okHttpClient = GlobalComponent.getOkHttpClient();
         File upPath = new File(httpRequest.getSession().getServletContext().getRealPath("/uploadFile/up"));
@@ -118,5 +129,28 @@ public class SongService {
         } finally {
             uploadFile.delete();
         }
+    }
+
+    public ResponseDataDTO getMySong(String openid){
+        ResponseDataDTO responseDataDTO = new ResponseDataDTO();
+        List<SongEntity> songEntityList = songRepo.findAllByCreatorOpenid(openid);
+        responseDataDTO.setSuccess(true);
+        responseDataDTO.setResult(createSongInfoDTO(songEntityList));
+        return responseDataDTO;
+    }
+
+    private List<SongInfoDTO> createSongInfoDTO(List<SongEntity> songEntityList){
+        List<SongInfoDTO> songInfoDTOList = new LinkedList<>();
+        for(SongEntity songEntity : songEntityList){
+            SongInfoDTO songInfoDTO = new SongInfoDTO();
+            songInfoDTO.setSongId(songEntity.getId());
+            songInfoDTO.setSongName(songEntity.getSongName());
+            songInfoDTO.setCreatorOpenid(songEntity.getCreatorOpenid());
+            songInfoDTO.setLyric(songEntity.getLyric());
+            songInfoDTO.setPart(songEntity.getPart().split(";"));
+            songInfoDTO.setSongFiles(songEntity.getFilesUrl().split(";"));
+            songInfoDTOList.add(songInfoDTO);
+        }
+        return songInfoDTOList;
     }
 }

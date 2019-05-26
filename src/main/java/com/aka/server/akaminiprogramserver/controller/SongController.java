@@ -40,4 +40,14 @@ public class SongController {
         paramMap.put("part", request.getParameter("part"));
         return songService.participateSong(songId, file, paramMap, request);
     }
+
+    @GetMapping("song/mysong")
+    public ResponseDataDTO getMySong(@RequestParam String openid){
+        return songService.getMySong(openid);
+    }
+
+    @GetMapping("song/songlist")
+    public ResponseDataDTO getSongList(){
+        return songService.getSongList();
+    }
 }
