@@ -47,14 +47,14 @@ public class SongService {
         songEntity.setLyric(paramMap.get("lyric"));
         songEntity.setName(paramMap.get("songName"));
         songEntity.setPeopleCounting((byte)0);
-        songEntity.setPart("");
+        songEntity.setPart(paramMap.get("part") + ":" + paramMap.get("nickname") + ";");
 
         songRepo.save(songEntity);
 
         String uploadFileName = songEntity.getId() + "_0.mp3";
 
         File upPath = new File(httpRequest.getSession().getServletContext().getRealPath("/uploadFile/up"));
-        upPath.mkdirs();
+        if(!upPath.exists()) upPath.mkdirs();
 
         File uploadFile = new File(upPath, uploadFileName);
         try{
