@@ -16,7 +16,7 @@ import java.util.Objects;
  *
  * @author Zwiebeln_Chan
  * @version V1.0
- * @date 2019/5/26 0:17
+ * @date 2019/5/26 23:02
  */
 @Entity
 @EntityListeners(AuditingEntityListener.class) //启动自动生成时间
@@ -25,13 +25,13 @@ public class SongEntity {
     private long id;
     private Timestamp gmtCreate;
     private Timestamp gmtModified;
-    private String name;
-    private String leaderId;
+    private String songName;
+    private String creatorOpenid;
     private byte peopleCounting;
     private String filesUrl;
-    private String cover;
     private String part;
     private String lyric;
+    private String creatorNickname;
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -67,23 +67,23 @@ public class SongEntity {
     }
 
     @Basic
-    @Column(name = "name", nullable = false, length = 30)
-    public String getName() {
-        return name;
+    @Column(name = "song_name", nullable = false, length = 30)
+    public String getSongName() {
+        return songName;
     }
 
-    public void setName(String name) {
-        this.name = name;
+    public void setSongName(String songName) {
+        this.songName = songName;
     }
 
     @Basic
-    @Column(name = "leader_id", nullable = false, length = 35)
-    public String getLeaderId() {
-        return leaderId;
+    @Column(name = "creator_openid", nullable = false, length = 35)
+    public String getCreatorOpenid() {
+        return creatorOpenid;
     }
 
-    public void setLeaderId(String leaderId) {
-        this.leaderId = leaderId;
+    public void setCreatorOpenid(String creatorOpenid) {
+        this.creatorOpenid = creatorOpenid;
     }
 
     @Basic
@@ -107,17 +107,7 @@ public class SongEntity {
     }
 
     @Basic
-    @Column(name = "cover", nullable = true, length = 255)
-    public String getCover() {
-        return cover;
-    }
-
-    public void setCover(String cover) {
-        this.cover = cover;
-    }
-
-    @Basic
-    @Column(name = "part", nullable = true, length = 1000)
+    @Column(name = "part", nullable = true, length = 300)
     public String getPart() {
         return part;
     }
@@ -145,16 +135,26 @@ public class SongEntity {
                 peopleCounting == that.peopleCounting &&
                 Objects.equals(gmtCreate, that.gmtCreate) &&
                 Objects.equals(gmtModified, that.gmtModified) &&
-                Objects.equals(name, that.name) &&
-                Objects.equals(leaderId, that.leaderId) &&
+                Objects.equals(songName, that.songName) &&
+                Objects.equals(creatorOpenid, that.creatorOpenid) &&
                 Objects.equals(filesUrl, that.filesUrl) &&
-                Objects.equals(cover, that.cover) &&
                 Objects.equals(part, that.part) &&
-                Objects.equals(lyric, that.lyric);
+                Objects.equals(lyric, that.lyric) &&
+                Objects.equals(creatorNickname, that.creatorNickname);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, gmtCreate, gmtModified, name, leaderId, peopleCounting, filesUrl, cover, part, lyric);
+        return Objects.hash(id, gmtCreate, gmtModified, songName, creatorOpenid, peopleCounting, filesUrl, part, lyric, creatorNickname);
+    }
+
+    @Basic
+    @Column(name = "creator_nickname", nullable = true, length = 35)
+    public String getCreatorNickname() {
+        return creatorNickname;
+    }
+
+    public void setCreatorNickname(String creatorNickname) {
+        this.creatorNickname = creatorNickname;
     }
 }

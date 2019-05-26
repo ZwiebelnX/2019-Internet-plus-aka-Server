@@ -1,6 +1,7 @@
 package com.aka.server.akaminiprogramserver.service;
 
 import com.aka.server.akaminiprogramserver.DTO.result.ResponseDataDTO;
+import com.aka.server.akaminiprogramserver.DTO.song.SongInfoDTO;
 import com.aka.server.akaminiprogramserver.repo.docker.SongRepo;
 import com.aka.server.akaminiprogramserver.repo.entity.SongEntity;
 import com.aka.server.akaminiprogramserver.util.GlobalComponent;
@@ -14,7 +15,10 @@ import javax.servlet.http.HttpServletRequest;
 import javax.transaction.Transactional;
 import java.io.File;
 import java.io.IOException;
+import java.util.LinkedList;
+import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 /**
  * <p>Title: SongService</p>
@@ -40,25 +44,65 @@ public class SongService {
     public ResponseDataDTO createSong(MultipartFile file, Map<String, String> paramMap, HttpServletRequest httpRequest) {
         ResponseDataDTO responseDTO = new ResponseDataDTO();
 
-        OkHttpClient okHttpClient = GlobalComponent.getOkHttpClient();
 
         SongEntity songEntity = new SongEntity();
-        songEntity.setLeaderId(paramMap.get("openid"));
+        songEntity.setCreatorOpenid(paramMap.get("openid"));
         songEntity.setLyric(paramMap.get("lyric"));
-        songEntity.setName(paramMap.get("songName"));
-        songEntity.setPeopleCounting((byte)0);
-        songEntity.setPart("");
+        songEntity.setSongName(paramMap.get("songName"));
+        songEntity.setPeopleCounting((byte)1);
+        songEntity.setPart(paramMap.get("part") + ":" + paramMap.get("nickname") + ";");
 
         songRepo.save(songEntity);
 
         String uploadFileName = songEntity.getId() + "_0.mp3";
+        Response response = uploadSongFile(file, uploadFileName, httpRequest);
+        if(response != null && response.isSuccessful()){
+            songEntity.setFilesUrl(response.header("location") + ";");
+            songRepo.save(songEntity);
+            responseDTO.setSuccess(true);
+            responseDTO.setResult(songEntity.getId());
+        }
+        else{
+            responseDTO.setReason("文件上传失败！");
+        }
+        return responseDTO;
+    }
 
+    public ResponseDataDTO participateSong(long songId, MultipartFile file, Map<String, String> params, HttpServletRequest request){
+        ResponseDataDTO responseDataDTO = new ResponseDataDTO();
+        Optional<SongEntity> songEntity = songRepo.findById(songId);
+
+        if(!songEntity.isPresent()) return new ResponseDataDTO("获取歌曲失败！请检查ID号");
+        songEntity.get().setPeopleCounting((byte)(songEntity.get().getPeopleCounting() + 1));
+        String uploadFilename = songEntity.get().getId() + "_" + songEntity.get().getPeopleCounting() + ".mp3";
+        Response response = uploadSongFile(file, uploadFilename, request);
+        if(response != null && response.isSuccessful()){
+            songEntity.get().setFilesUrl(songEntity.get().getFilesUrl() + response.header("location") + ";");
+            songEntity.get().setPart(songEntity.get().getPart() + params.get("part") + ":" + params.get("nickname") + ";");
+            songRepo.save(songEntity.get());
+            responseDataDTO.setSuccess(true);
+        }
+        else{
+            responseDataDTO.setReason("上传文件失败！");
+        }
+        return responseDataDTO;
+    }
+
+    public ResponseDataDTO getSongList(){
+        ResponseDataDTO responseDataDTO = new ResponseDataDTO();
+        List<SongEntity> songEntityList = songRepo.findAll();
+        responseDataDTO.setSuccess(true);
+        responseDataDTO.setResult(createSongInfoDTO(songEntityList));
+        return responseDataDTO;
+    }
+
+    private Response uploadSongFile(MultipartFile file, String uploadFileName, HttpServletRequest httpRequest){
+        OkHttpClient okHttpClient = GlobalComponent.getOkHttpClient();
         File upPath = new File(httpRequest.getSession().getServletContext().getRealPath("/uploadFile/up"));
-        upPath.mkdirs();
+        if(!upPath.exists()) upPath.mkdirs();
 
         File uploadFile = new File(upPath, uploadFileName);
         try{
-            System.out.println(uploadFile.getCanonicalPath());
             if(!uploadFile.createNewFile()){
 
                 throw new IOException("缓存文件创建失败");
@@ -78,19 +122,35 @@ public class SongService {
                     .addHeader("Content-Length", Long.toString(requestBody.contentLength()))
                     .build();
             final Call call = okHttpClient.newCall(request);
-            Response response = call.execute();
-            if(response.isSuccessful()){
-                songEntity.setFilesUrl(response.header("location") + ";");
-                songRepo.save(songEntity);
-                responseDTO.setSuccess(true);
-                responseDTO.setResult(songEntity.getId());
-            }
+            return call.execute();
         } catch (Exception e){
             e.printStackTrace();
-            responseDTO.setResult("创建缓存文件失败，请重试");
+            return null;
         } finally {
             uploadFile.delete();
         }
-        return responseDTO;
+    }
+
+    public ResponseDataDTO getMySong(String openid){
+        ResponseDataDTO responseDataDTO = new ResponseDataDTO();
+        List<SongEntity> songEntityList = songRepo.findAllByCreatorOpenid(openid);
+        responseDataDTO.setSuccess(true);
+        responseDataDTO.setResult(createSongInfoDTO(songEntityList));
+        return responseDataDTO;
+    }
+
+    private List<SongInfoDTO> createSongInfoDTO(List<SongEntity> songEntityList){
+        List<SongInfoDTO> songInfoDTOList = new LinkedList<>();
+        for(SongEntity songEntity : songEntityList){
+            SongInfoDTO songInfoDTO = new SongInfoDTO();
+            songInfoDTO.setSongId(songEntity.getId());
+            songInfoDTO.setSongName(songEntity.getSongName());
+            songInfoDTO.setCreatorOpenid(songEntity.getCreatorOpenid());
+            songInfoDTO.setLyric(songEntity.getLyric());
+            songInfoDTO.setPart(songEntity.getPart().split(";"));
+            songInfoDTO.setSongFiles(songEntity.getFilesUrl() == null ? null : songEntity.getFilesUrl().split(";"));
+            songInfoDTOList.add(songInfoDTO);
+        }
+        return songInfoDTOList;
     }
 }
