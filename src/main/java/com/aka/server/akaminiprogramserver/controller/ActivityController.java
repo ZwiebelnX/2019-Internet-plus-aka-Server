@@ -32,7 +32,7 @@ public class ActivityController {
     }
 
     //创建活动
-    @RequestMapping(value = "/activity")
+    @PostMapping(value = "/activity")
     @ResponseBody
     public ResponseDataDTO postActivity(@RequestBody String jsonString) {
         ActivityDTO activityDTO;
@@ -52,7 +52,7 @@ public class ActivityController {
     }
 
     //加入活动
-    @RequestMapping(value = "/activity/{activityId}")
+    @PostMapping(value = "/activity/{activityId}")
     @ResponseBody
     public ResponseDataDTO joinActivity(@RequestBody String jsonString, @PathVariable long activityId) {
         ParticipantDTO participantDTO;
@@ -75,7 +75,7 @@ public class ActivityController {
 
 
     //删除活动
-    @RequestMapping(value = "/activity/{activityId}")
+    @DeleteMapping(value = "/activity/{activityId}")
     @ResponseBody
     public ResponseDataDTO delete(@RequestBody String jsonString, @PathVariable long activityId) {
         DeleteDTO deleteDTO;
