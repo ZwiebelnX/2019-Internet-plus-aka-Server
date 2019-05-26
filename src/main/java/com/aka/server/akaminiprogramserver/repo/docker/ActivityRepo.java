@@ -7,5 +7,8 @@ import java.util.List;
 
 public interface ActivityRepo extends CrudRepository<ActivityEntity, Long> {
     ActivityEntity findById(long id);
-    List<ActivityEntity> findByLeaderOpenid(String id);
+    List<ActivityEntity> findByCreatorOpenid(String id);
+    List<ActivityEntity> findByParticipantContains(String openid);
+    List<ActivityEntity> findAll();
+
 }

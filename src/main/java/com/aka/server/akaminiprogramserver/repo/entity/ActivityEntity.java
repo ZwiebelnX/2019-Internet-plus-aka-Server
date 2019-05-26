@@ -16,7 +16,7 @@ import java.util.Objects;
  *
  * @author Zwiebeln_Chan
  * @version V1.0
- * @date 2019/5/24 20:32
+ * @date 2019/5/26 21:55
  */
 @Entity
 @EntityListeners(AuditingEntityListener.class) //启动自动生成时间
@@ -25,8 +25,9 @@ public class ActivityEntity {
     private long id;
     private Timestamp gmtCreate;
     private Timestamp gmtModified;
-    private String name;
-    private String leaderOpenid;
+    private String activityName;
+    private String creatorOpenid;
+    private String creatorNickname;
     private Timestamp startTime;
     private String location;
     private String phone;
@@ -68,23 +69,33 @@ public class ActivityEntity {
     }
 
     @Basic
-    @Column(name = "name", nullable = false, length = 30)
-    public String getName() {
-        return name;
+    @Column(name = "activity_name", nullable = false, length = 30)
+    public String getActivityName() {
+        return activityName;
     }
 
-    public void setName(String name) {
-        this.name = name;
+    public void setActivityName(String activityName) {
+        this.activityName = activityName;
     }
 
     @Basic
-    @Column(name = "leader_openid", nullable = false, length = 35)
-    public String getLeaderOpenid() {
-        return leaderOpenid;
+    @Column(name = "creator_openid", nullable = false, length = 35)
+    public String getCreatorOpenid() {
+        return creatorOpenid;
     }
 
-    public void setLeaderOpenid(String leaderOpenid) {
-        this.leaderOpenid = leaderOpenid;
+    public void setCreatorOpenid(String creatorOpenid) {
+        this.creatorOpenid = creatorOpenid;
+    }
+
+    @Basic
+    @Column(name = "creator_nickname", nullable = true, length = 30)
+    public String getCreatorNickname() {
+        return creatorNickname;
+    }
+
+    public void setCreatorNickname(String creatorNickname) {
+        this.creatorNickname = creatorNickname;
     }
 
     @Basic
@@ -167,8 +178,9 @@ public class ActivityEntity {
                 maxPeopleCounting == that.maxPeopleCounting &&
                 Objects.equals(gmtCreate, that.gmtCreate) &&
                 Objects.equals(gmtModified, that.gmtModified) &&
-                Objects.equals(name, that.name) &&
-                Objects.equals(leaderOpenid, that.leaderOpenid) &&
+                Objects.equals(activityName, that.activityName) &&
+                Objects.equals(creatorOpenid, that.creatorOpenid) &&
+                Objects.equals(creatorNickname, that.creatorNickname) &&
                 Objects.equals(startTime, that.startTime) &&
                 Objects.equals(location, that.location) &&
                 Objects.equals(phone, that.phone) &&
@@ -178,6 +190,6 @@ public class ActivityEntity {
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, gmtCreate, gmtModified, name, leaderOpenid, startTime, location, phone, nowPeopleCounting, maxPeopleCounting, comment, participant);
+        return Objects.hash(id, gmtCreate, gmtModified, activityName, creatorOpenid, creatorNickname, startTime, location, phone, nowPeopleCounting, maxPeopleCounting, comment, participant);
     }
 }

@@ -1,13 +1,12 @@
 package com.aka.server.akaminiprogramserver.controller;
 import com.aka.server.akaminiprogramserver.DTO.activity.ActivityDTO;
-import com.aka.server.akaminiprogramserver.DTO.activity.DeleteDTO;
-import com.aka.server.akaminiprogramserver.DTO.activity.LeaderDTO;
-import com.aka.server.akaminiprogramserver.DTO.activity.ParticipantDTO;
 import com.aka.server.akaminiprogramserver.DTO.result.ResponseDataDTO;
 import com.aka.server.akaminiprogramserver.service.ActivityService;
 import com.aka.server.akaminiprogramserver.util.GlobalComponent;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.Map;
 
 
 /**
@@ -41,7 +40,7 @@ public class ActivityController {
         }
 
         ResponseDataDTO responseData = new ResponseDataDTO();
-        if (activityService.postActivity(activityDTO)) {
+        if (activityService.createActivity(activityDTO)) {
             responseData.setSuccess(true);
         } else {
             responseData.setReason("数据存储失败！请稍后再试");
@@ -53,14 +52,14 @@ public class ActivityController {
     @PostMapping(value = "/activity/{activityId}")
     @ResponseBody
     public ResponseDataDTO joinActivity(@RequestBody String jsonString, @PathVariable long activityId) {
-        ParticipantDTO participantDTO;
-        try{
-            participantDTO = GlobalComponent.getJsonMapper().readValue(jsonString, ParticipantDTO.class);
-        } catch (Exception e){
+        Map requestParams;
+        try {
+            requestParams = GlobalComponent.getJsonMapper().readValue(jsonString, Map.class);
+        } catch (Exception e) {
             return new ResponseDataDTO("json格式错误！");
         }
         ResponseDataDTO responseData = new ResponseDataDTO();
-        int flag = activityService.joinActivity(activityId, participantDTO);
+        int flag = activityService.joinActivity(activityId, (String)requestParams.get("openid"));
         if (flag == 1) {
             responseData.setSuccess(true);
         } else if (flag == -1) {
@@ -74,14 +73,14 @@ public class ActivityController {
     @DeleteMapping(value = "/activity/{activityId}")
     @ResponseBody
     public ResponseDataDTO delete(@RequestBody String jsonString, @PathVariable long activityId) {
-        DeleteDTO deleteDTO;
-        try{
-            deleteDTO = GlobalComponent.getJsonMapper().readValue(jsonString, DeleteDTO.class);
-        } catch (Exception e){
+        Map requestParams;
+        try {
+            requestParams = GlobalComponent.getJsonMapper().readValue(jsonString, Map.class);
+        } catch (Exception e) {
             return new ResponseDataDTO("json格式错误！");
         }
         ResponseDataDTO responseData = new ResponseDataDTO();
-        int flag = activityService.delete(deleteDTO, activityId);
+        int flag = activityService.deleteActivity(activityId, (String)requestParams.get("openid"));
         if (flag == 1) {
             responseData.setSuccess(true);
         } else if (flag == -1) {
@@ -95,15 +94,26 @@ public class ActivityController {
     }
 
     //获取我发起的活动
-    @RequestMapping(value = "/activity/myactivity")
-    @ResponseBody
+    @GetMapping(value = "/activity/myactivity")
     public ResponseDataDTO findByLeader(@RequestBody String jsonString) {
-        LeaderDTO leaderDTO;
-        try{
-           leaderDTO= GlobalComponent.getJsonMapper().readValue(jsonString, LeaderDTO.class);
-        }catch (Exception e){
+        Map requestParams;
+        try {
+            requestParams = GlobalComponent.getJsonMapper().readValue(jsonString, Map.class);
+        } catch (Exception e) {
             return new ResponseDataDTO("json格式错误！");
         }
-        return activityService.findByLeader(leaderDTO);
+        return activityService.findActivityICreated((String)requestParams.get("openid"));
+    }
+
+    //获取我参与的活动
+    @GetMapping(value = "/activity/participateactivity")
+    public ResponseDataDTO findByParticipant(@RequestParam String openid) {
+        return activityService.findActivitiesByParticipant(openid);
+    }
+
+    //获取活动列表
+    @GetMapping(value = "/activity/activitylist")
+    public ResponseDataDTO getActivityList() {
+        return activityService.getActivityList();
     }
 }
