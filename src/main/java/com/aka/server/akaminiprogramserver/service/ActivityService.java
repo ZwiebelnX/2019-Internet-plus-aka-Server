@@ -1,17 +1,15 @@
 package com.aka.server.akaminiprogramserver.service;
 
 import com.aka.server.akaminiprogramserver.DTO.activity.ActivityDTO;
-import com.aka.server.akaminiprogramserver.DTO.activity.DeleteDTO;
-import com.aka.server.akaminiprogramserver.DTO.activity.LeaderDTO;
-import com.aka.server.akaminiprogramserver.DTO.activity.ParticipantDTO;
 import com.aka.server.akaminiprogramserver.DTO.result.ResponseDataDTO;
 import com.aka.server.akaminiprogramserver.repo.docker.ActivityRepo;
 import com.aka.server.akaminiprogramserver.repo.entity.ActivityEntity;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import javax.transaction.Transactional;
 import java.sql.Timestamp;
-import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.List;
 
 
@@ -36,24 +34,23 @@ public class ActivityService {
     }
 
     //创建活动
-    public boolean postActivity(ActivityDTO activityDTO) {
+    @Transactional
+    public boolean createActivity(ActivityDTO activityDTO) {
         ActivityEntity newActivity = new ActivityEntity();
         try {
-            newActivity.setLeaderOpenid(activityDTO.getOpenid());
-            newActivity.setName(activityDTO.getName());
-            Timestamp ts = new Timestamp(System.currentTimeMillis());
-            try {
-                ts = Timestamp.valueOf(activityDTO.getTime());
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-            newActivity.setStartTime(ts);
+            newActivity.setCreatorOpenid(activityDTO.getCreatorOpenid());
+            newActivity.setCreatorNickname(activityDTO.getCreatorNickname());
+            newActivity.setActivityName(activityDTO.getName());
+            newActivity.setStartTime(activityDTO.getTime());
             newActivity.setLocation(activityDTO.getLocation());
-            int maxTmp = Integer.parseInt(activityDTO.getMaxPeopleCounting());
-            newActivity.setMaxPeopleCounting(maxTmp);
+            newActivity.setMaxPeopleCounting(Integer.parseInt(activityDTO.getMaxPeopleCounting()));
+            newActivity.setNowPeopleCounting(0);
             newActivity.setComment(activityDTO.getComment());
             newActivity.setPhone(activityDTO.getPhone());
+            newActivity.setParticipant("");
+
             activityRepo.save(newActivity);
+
             return true;
         } catch (Exception e) {
             e.printStackTrace();
@@ -62,7 +59,7 @@ public class ActivityService {
     }
 
     //参加活动
-    public int joinActivity(long activityId, ParticipantDTO participantDTO) {
+    public int joinActivity(long activityId, String openid) {
         ActivityEntity nowActivity = activityRepo.findById(activityId);
         if (nowActivity == null) {
             return -1;
@@ -70,7 +67,7 @@ public class ActivityService {
         try {
             int count = nowActivity.getNowPeopleCounting() + 1;
             nowActivity.setNowPeopleCounting(count);
-            String nowParticipant = nowActivity.getParticipant() + participantDTO.getOpenid() + ";";
+            String nowParticipant = nowActivity.getParticipant() + openid + ";";
             nowActivity.setParticipant(nowParticipant);
             activityRepo.save(nowActivity);
             return 1;
@@ -81,13 +78,13 @@ public class ActivityService {
     }
 
     //删除活动
-    public int delete(DeleteDTO deleteDTO, long activityId) {
+    public int deleteActivity(long activityId, String openid) {
         ActivityEntity nowActivity = activityRepo.findById(activityId);
         if (nowActivity == null) {
             return -1;
         }
-        String leaderId = nowActivity.getLeaderOpenid();
-        if (!leaderId.equals(deleteDTO.getOpenid())) {
+        String leaderId = nowActivity.getCreatorOpenid();
+        if (!leaderId.equals(openid)) {
             return -2;
         }
         try {
@@ -100,29 +97,51 @@ public class ActivityService {
     }
 
     //获取我发起的活动
-    public ResponseDataDTO findByLeader(LeaderDTO leaderDTO) {
-        List<ActivityEntity> lists = activityRepo.findByLeaderOpenid(leaderDTO.getOpenid());
+    public ResponseDataDTO findActivityICreated(String openid) {
+        List<ActivityEntity> activityEntityList = activityRepo.findByCreatorOpenid(openid);
         ResponseDataDTO response = new ResponseDataDTO();
         response.setSuccess(true);
-        response.setResult(lists);
+        response.setResult(createActivityDTOs(activityEntityList));
         return response;
     }
 
     //获取我参与的活动
-    public ResponseDataDTO findByParticipant(ParticipantDTO participantDTO){
-        List<ActivityEntity> lists = activityRepo.findByParticipantId(participantDTO.getOpenid());
+    public ResponseDataDTO findActivitiesByParticipant(String openid){
+        List<ActivityEntity> activityEntityList = activityRepo.findByParticipantContains(openid);
+
         ResponseDataDTO response = new ResponseDataDTO();
         response.setSuccess(true);
-        response.setResult(lists);
+        response.setResult(createActivityDTOs(activityEntityList));
         return response;
     }
 
     //获取活动列表
-    public ResponseDataDTO getActivityList(ActivityDTO activityDTO){
-        List<ActivityEntity> lists = activityRepo.findByActivityid();//获取所有
+    public ResponseDataDTO getActivityList(){
+        List<ActivityEntity> activityEntityList = activityRepo.findAll();//获取所有
         ResponseDataDTO response = new ResponseDataDTO();
         response.setSuccess(true);
-        response.setResult(lists);
+        response.setResult(createActivityDTOs(activityEntityList));
         return response;
+    }
+
+    private List<ActivityDTO> createActivityDTOs(List<ActivityEntity> activityEntityList){
+        List<ActivityDTO> activityDTOList = new LinkedList<>();
+        for(ActivityEntity activityEntity : activityEntityList){
+            ActivityDTO activityDTO = new ActivityDTO();
+            activityDTO.setActivityId(Long.toString(activityEntity.getId()));
+            activityDTO.setCreatorOpenid(activityEntity.getCreatorOpenid());
+            activityDTO.setCreatorNickname(activityEntity.getCreatorNickname());
+            activityDTO.setName(activityEntity.getActivityName());
+            activityDTO.setTime(activityEntity.getStartTime());
+            activityDTO.setLocation(activityEntity.getLocation());
+            activityDTO.setPhone(activityEntity.getPhone());
+            activityDTO.setMaxPeopleCounting(Long.toString(activityEntity.getMaxPeopleCounting()));
+            activityDTO.setNowPeopleCounting(Long.toString(activityEntity.getNowPeopleCounting()));
+            activityDTO.setParticipant(activityEntity.getParticipant().split(";"));
+            activityDTO.setComment(activityEntity.getComment());
+            activityDTOList.add(activityDTO);
+        }
+
+        return activityDTOList;
     }
 }
