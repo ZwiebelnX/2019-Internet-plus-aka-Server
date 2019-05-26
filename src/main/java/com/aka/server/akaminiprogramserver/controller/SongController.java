@@ -27,6 +27,6 @@ public class SongController {
         paramMap.put("songName", request.getParameter("songName"));
         paramMap.put("lyric", request.getParameter("lyric"));
         paramMap.put("openid", request.getParameter("openid"));
-        return songService.createSong(file, paramMap);
+        return songService.createSong(file, paramMap, request);
     }
 }

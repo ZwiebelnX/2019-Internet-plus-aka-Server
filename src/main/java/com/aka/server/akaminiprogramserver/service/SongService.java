@@ -10,6 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.transaction.Transactional;
 import java.io.File;
 import java.io.IOException;
@@ -36,7 +37,7 @@ public class SongService {
     }
 
     @Transactional
-    public ResponseDataDTO createSong(MultipartFile file, Map<String, String> paramMap) {
+    public ResponseDataDTO createSong(MultipartFile file, Map<String, String> paramMap, HttpServletRequest httpRequest) {
         ResponseDataDTO responseDTO = new ResponseDataDTO();
 
         OkHttpClient okHttpClient = GlobalComponent.getOkHttpClient();
@@ -51,10 +52,17 @@ public class SongService {
         songRepo.save(songEntity);
 
         String uploadFileName = songEntity.getId() + "_0.mp3";
-        File uploadFile = new File(".", uploadFileName);
-        try{
 
-            if(!uploadFile.createNewFile()) throw new IOException("缓存文件创建失败");
+        File upPath = new File(httpRequest.getSession().getServletContext().getRealPath("/uploadFile/up"));
+        upPath.mkdirs();
+
+        File uploadFile = new File(upPath, uploadFileName);
+        try{
+            System.out.println(uploadFile.getCanonicalPath());
+            if(!uploadFile.createNewFile()){
+
+                throw new IOException("缓存文件创建失败");
+            }
             file.transferTo(uploadFile);
 
             MediaType multiPartFormData = MediaType.parse("multipart/form-data; charset=utf-8");
