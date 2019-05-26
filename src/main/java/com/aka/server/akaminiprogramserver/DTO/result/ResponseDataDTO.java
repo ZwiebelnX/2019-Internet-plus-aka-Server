@@ -50,6 +50,7 @@ public class ResponseDataDTO {
     }
 
     public void setReason(String reason) {
+        success = false;
         this.reason = reason;
     }
 

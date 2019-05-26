@@ -14,4 +14,5 @@ import org.springframework.data.repository.CrudRepository;
  * @date 2019/5/24 20:36
  */
 public interface SongRepo extends CrudRepository<SongEntity, Long> {
+
 }
