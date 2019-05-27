@@ -18,4 +18,5 @@ import java.util.List;
 public interface SongRepo extends CrudRepository<SongEntity, Long> {
     List<SongEntity> findAllByCreatorOpenid(String openid);
     List<SongEntity> findAll();
+    void deleteById(long id);
 }

@@ -50,4 +50,16 @@ public class SongController {
     public ResponseDataDTO getSongList(){
         return songService.getSongList();
     }
+
+    @DeleteMapping("song/{songId}")
+    public ResponseDataDTO deleteSong(@PathVariable long songId){
+        ResponseDataDTO responseDataDTO = new ResponseDataDTO();
+        if(songService.deleteSong(songId)){
+            responseDataDTO.setSuccess(true);
+        }
+        else{
+            responseDataDTO.setResult("删除合唱失败！请检查ID或稍后重试");
+        }
+        return responseDataDTO;
+    }
 }

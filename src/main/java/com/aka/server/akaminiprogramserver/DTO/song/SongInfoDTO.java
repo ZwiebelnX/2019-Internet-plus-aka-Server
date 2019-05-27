@@ -21,8 +21,17 @@ public class SongInfoDTO {
     private String creatorNickname;
     private int peopleCounting;
     private String lyric;
+    private String cover;
     private String[] songFiles;
     private String[] part;
+
+    public String getCover() {
+        return cover;
+    }
+
+    public void setCover(String cover) {
+        this.cover = cover;
+    }
 
     public String getCreatorNickname() {
         return creatorNickname;

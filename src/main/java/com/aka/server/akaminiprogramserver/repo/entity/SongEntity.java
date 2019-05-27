@@ -32,6 +32,7 @@ public class SongEntity {
     private String part;
     private String lyric;
     private String creatorNickname;
+    private String coverUrl;
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -126,6 +127,16 @@ public class SongEntity {
         this.lyric = lyric;
     }
 
+    @Basic
+    @Column(name = "creator_nickname", nullable = true, length = 35)
+    public String getCreatorNickname() {
+        return creatorNickname;
+    }
+
+    public void setCreatorNickname(String creatorNickname) {
+        this.creatorNickname = creatorNickname;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -140,21 +151,22 @@ public class SongEntity {
                 Objects.equals(filesUrl, that.filesUrl) &&
                 Objects.equals(part, that.part) &&
                 Objects.equals(lyric, that.lyric) &&
-                Objects.equals(creatorNickname, that.creatorNickname);
+                Objects.equals(creatorNickname, that.creatorNickname) &&
+                Objects.equals(coverUrl, that.coverUrl);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, gmtCreate, gmtModified, songName, creatorOpenid, peopleCounting, filesUrl, part, lyric, creatorNickname);
+        return Objects.hash(id, gmtCreate, gmtModified, songName, creatorOpenid, peopleCounting, filesUrl, part, lyric, creatorNickname, coverUrl);
     }
 
     @Basic
-    @Column(name = "creator_nickname", nullable = true, length = 35)
-    public String getCreatorNickname() {
-        return creatorNickname;
+    @Column(name = "cover_url", nullable = false, length = 100)
+    public String getCoverUrl() {
+        return coverUrl;
     }
 
-    public void setCreatorNickname(String creatorNickname) {
-        this.creatorNickname = creatorNickname;
+    public void setCoverUrl(String coverUrl) {
+        this.coverUrl = coverUrl;
     }
 }

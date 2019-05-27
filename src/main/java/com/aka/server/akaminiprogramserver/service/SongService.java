@@ -9,16 +9,14 @@ import com.aka.server.akaminiprogramserver.util.GlobalData;
 import okhttp3.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.EnableTransactionManagement;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.transaction.Transactional;
 import java.io.File;
 import java.io.IOException;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
+import java.util.*;
 
 /**
  * <p>Title: SongService</p>
@@ -32,6 +30,7 @@ import java.util.Optional;
  */
 
 @Service
+@EnableTransactionManagement
 public class SongService {
     private final SongRepo songRepo;
 
@@ -47,10 +46,16 @@ public class SongService {
 
         SongEntity songEntity = new SongEntity();
         songEntity.setCreatorOpenid(paramMap.get("openid"));
+        songEntity.setCreatorNickname(paramMap.get("nickname"));
         songEntity.setLyric(paramMap.get("lyric"));
         songEntity.setSongName(paramMap.get("songName"));
         songEntity.setPeopleCounting((byte)1);
         songEntity.setPart(paramMap.get("part") + ":" + paramMap.get("nickname") + ";");
+
+        int coverNumber = new Random().nextInt(5) + 1;
+        String coverUrl = "https://aka-1257109822.cos.ap-shanghai.myqcloud.com/icon/" + coverNumber + ".jpg";
+
+        songEntity.setCoverUrl(coverUrl);
 
         songRepo.save(songEntity);
 
@@ -139,6 +144,16 @@ public class SongService {
         return responseDataDTO;
     }
 
+    public boolean deleteSong(long songId){
+        try{
+            songRepo.deleteById(songId);
+            return true;
+        } catch (Exception e){
+            e.printStackTrace();
+            return false;
+        }
+    }
+
     private List<SongInfoDTO> createSongInfoDTO(List<SongEntity> songEntityList){
         List<SongInfoDTO> songInfoDTOList = new LinkedList<>();
         for(SongEntity songEntity : songEntityList){
@@ -146,8 +161,11 @@ public class SongService {
             songInfoDTO.setSongId(songEntity.getId());
             songInfoDTO.setSongName(songEntity.getSongName());
             songInfoDTO.setCreatorOpenid(songEntity.getCreatorOpenid());
+            songInfoDTO.setCreatorNickname(songEntity.getCreatorNickname());
+            songInfoDTO.setPeopleCounting(songEntity.getPeopleCounting());
             songInfoDTO.setLyric(songEntity.getLyric());
             songInfoDTO.setPart(songEntity.getPart().split(";"));
+            songInfoDTO.setCover(songEntity.getCoverUrl());
             songInfoDTO.setSongFiles(songEntity.getFilesUrl() == null ? null : songEntity.getFilesUrl().split(";"));
             songInfoDTOList.add(songInfoDTO);
         }
