@@ -95,14 +95,8 @@ public class ActivityController {
 
     //获取我发起的活动
     @GetMapping(value = "/activity/myactivity")
-    public ResponseDataDTO findByLeader(@RequestBody String jsonString) {
-        Map requestParams;
-        try {
-            requestParams = GlobalComponent.getJsonMapper().readValue(jsonString, Map.class);
-        } catch (Exception e) {
-            return new ResponseDataDTO("json格式错误！");
-        }
-        return activityService.findActivityICreated((String)requestParams.get("openid"));
+    public ResponseDataDTO findByLeader(@RequestParam String openid) {
+        return activityService.findActivityICreated(openid);
     }
 
     //获取我参与的活动
